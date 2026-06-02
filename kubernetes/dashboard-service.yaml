@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: dashboard
+  namespace: poc-pmb
+  labels:
+    app: dashboard
+    autopoc.io/project: pmb
+spec:
+  type: ClusterIP
+  selector:
+    app: dashboard
+  ports:
+    - port: 8080
+      targetPort: 8080

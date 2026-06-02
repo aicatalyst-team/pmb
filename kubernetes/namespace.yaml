@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: poc-pmb
+  labels:
+    app.kubernetes.io/name: pmb
+    app.kubernetes.io/managed-by: autopoc
