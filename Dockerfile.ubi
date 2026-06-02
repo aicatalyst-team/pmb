@@ -1,0 +1,45 @@
+# ============================================================
+# PMB (Personal Memory Brain) — UBI-based Dockerfile
+# Runs the PMB dashboard web server on OpenShift
+# ============================================================
+FROM registry.access.redhat.com/ubi9/python-312
+
+WORKDIR /opt/app-root/src
+
+# Copy dependency specification first for caching
+COPY pyproject.toml MANIFEST.in ./
+
+# Upgrade pip and install build tools
+RUN pip install --no-cache-dir --upgrade pip setuptools wheel
+
+# Copy source code
+COPY src/ src/
+COPY scripts/ scripts/
+COPY README.md LICENSE NOTICE ./
+
+# Install the package (core only, no optional extras to keep image small)
+RUN pip install --no-cache-dir -e .
+
+# Create PMB data directory and workspace
+RUN mkdir -p /opt/app-root/src/.pmb/default && \
+    mkdir -p /opt/app-root/src/workspace
+
+# Create a startup script that initializes workspace and starts dashboard
+RUN printf '#!/bin/bash\n\
+cd /opt/app-root/src/workspace\n\
+pmb init --name default 2>/dev/null || true\n\
+exec pmb dashboard --host 0.0.0.0 --port 8080\n' > /opt/app-root/src/start.sh && \
+    chmod +x /opt/app-root/src/start.sh
+
+# OpenShift compatibility
+USER 0
+RUN chgrp -R 0 /opt/app-root && chmod -R g=u /opt/app-root
+USER 1001
+
+ENV PYTHONUNBUFFERED=1 \
+    HOME=/opt/app-root/src \
+    PMB_HOME=/opt/app-root/src/.pmb
+
+EXPOSE 8080
+
+CMD ["/opt/app-root/src/start.sh"]
