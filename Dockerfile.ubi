@@ -17,8 +17,8 @@ COPY src/ src/
 COPY scripts/ scripts/
 COPY README.md LICENSE NOTICE ./
 
-# Install the package (core only, no optional extras to keep image small)
-RUN pip install --no-cache-dir -e .
+# Install the package (non-editable to avoid permission issues)
+RUN pip install --no-cache-dir .
 
 # Create PMB data directory and workspace
 RUN mkdir -p /opt/app-root/src/.pmb/default && \
