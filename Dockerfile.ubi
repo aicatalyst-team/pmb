@@ -17,10 +17,11 @@ COPY src/ src/
 COPY scripts/ scripts/
 COPY README.md LICENSE NOTICE ./
 
-# Fix source ownership so pip can create egg-info, then install
+# Install CPU-only PyTorch first (avoid pulling 2GB+ CUDA dependencies)
 USER 0
 RUN chown -R 1001:0 /opt/app-root/src
 USER 1001
+RUN pip install --no-cache-dir torch --extra-index-url https://download.pytorch.org/whl/cpu
 RUN pip install --no-cache-dir .
 
 # Create PMB data directory and workspace
