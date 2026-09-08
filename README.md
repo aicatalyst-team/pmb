@@ -1,4 +1,10 @@
-<div align="center">
+> [!WARNING]
+> **This repository is archived.**
+>
+> Archived on 2026-09-08 by the AI Catalyst Platform Team.
+> It is read-only and no longer maintained.
+
+---<div align="center">
 
 <img src="https://raw.githubusercontent.com/oleksiijko/pmb/main/docs/assets/logo.png" width="180" alt="PMB logo">
 
